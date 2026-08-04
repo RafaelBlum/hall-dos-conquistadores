@@ -41,7 +41,7 @@ class AuthenticatedSessionController extends Controller
                 ->withInput();
         }
 
-        if ($user->panel === PanelTypeEnum::ADMIN || $user->panel === PanelTypeEnum::SUPER_ADMIN) {
+        if ($user->panel === PanelTypeEnum::CHANNEL || $user->panel === PanelTypeEnum::SUPER_ADMIN) {
             return redirect()->intended(route('filament.admin.pages.dashboard'));
         }
 

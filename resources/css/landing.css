@@ -1,0 +1,1062 @@
+@import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Silkscreen:wght@400;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+}
+
+.font-pixel {
+    font-family: 'Silkscreen', cursive;
+}
+
+/* ============================================
+   HERO SECTION
+============================================ */
+
+.hero-wrapper {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.hero-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    z-index: 0;
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg,
+            rgba(0, 0, 0, 0.85) 0%,
+            rgba(20, 10, 60, 0.8) 40%,
+            rgba(99, 40, 180, 0.5) 70%,
+            rgba(0, 0, 0, 0.75) 100%);
+    z-index: 1;
+}
+
+.hero-overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1" d="M0,160 C360,80 720,240 1080,160 C1260,120 1380,200 1440,160"/></svg>') repeat;
+    opacity: 0.5;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 2rem;
+    text-align: center;
+}
+
+.hero-logo {
+    animation: fadeInDown 1s ease-out forwards, logo-glow 3s ease-in-out 1s infinite;
+    position: relative;
+    z-index: 2;
+}
+
+/* ============================================
+   LOGO PULSE EFFECT (Background color pulse)
+ ============================================ */
+
+.logo-pulse {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-logo {
+    position: relative;
+    z-index: 2;
+    image-rendering: pixelated;
+    animation: logo-glow 3s ease-in-out infinite;
+}
+
+@keyframes logo-glow {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 15px rgba(139, 92, 246, 0.4)) drop-shadow(0 0 30px rgba(139, 92, 246, 0.2));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 30px rgba(167, 139, 250, 0.6)) drop-shadow(0 0 60px rgba(139, 92, 246, 0.4)) drop-shadow(0 0 90px rgba(99, 40, 180, 0.2));
+    }
+}
+
+.hero-title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 0 40px rgba(139, 92, 246, 0.6);
+    animation: fadeInUp 1s ease-out 0.3s forwards;
+    opacity: 0;
+}
+
+.hero-subtitle {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: rgba(255, 255, 255, 0.75);
+    max-width: 650px;
+    margin-top: 1.5rem;
+    line-height: 1.7;
+    animation: fadeInUp 1s ease-out 0.6s forwards;
+    opacity: 0;
+}
+
+.hero-cta {
+    margin-top: 2.5rem;
+    animation: fadeInUp 1s ease-out 0.9s forwards;
+    opacity: 0;
+}
+
+/* ============================================
+   BUTTON
+============================================ */
+
+.btn-hero {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2.5rem;
+    font-family: 'Silkscreen', cursive;
+    font-size: 1rem;
+    color: #fff;
+    background: linear-gradient(135deg, #7c3aed, #4f46e5);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 30px rgba(124, 58, 237, 0.5), inset 0 0 30px rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+    transform: rotate(45deg);
+    transition: 0.6s;
+}
+
+.btn-hero:hover::before {
+    left: 100%;
+}
+
+.btn-hero:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 0 50px rgba(124, 58, 237, 0.8), inset 0 0 30px rgba(255, 255, 255, 0.2);
+}
+
+/* ============================================
+   SCROLL INDICATOR (Mouse style)
+============================================ */
+
+.scroll-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 3rem;
+    text-decoration: none;
+    cursor: pointer;
+    animation: fadeInUp 1s ease-out 1.2s forwards;
+    opacity: 0;
+}
+
+.scroll-indicator:hover {
+    opacity: 1;
+}
+
+.scroll-mouse {
+    width: 24px;
+    height: 38px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    padding-top: 6px;
+    transition: border-color 0.3s;
+}
+
+.scroll-indicator:hover .scroll-mouse {
+    border-color: rgba(255, 255, 255, 0.7);
+}
+
+.scroll-wheel {
+    width: 3px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 2px;
+    animation: scroll-wheel 1.5s ease-in-out infinite;
+}
+
+.scroll-text {
+    font-family: 'Silkscreen', cursive;
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: color 0.3s;
+}
+
+.scroll-indicator:hover .scroll-text {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+@keyframes scroll-wheel {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+}
+
+/* ============================================
+   ABOUT SECTION (Space background)
+============================================ */
+
+.game-section {
+    position: relative;
+    z-index: 2;
+    background: linear-gradient(180deg, #0a0a1a 0%, #0d0b20 30%, #12102a 50%, #0d0b20 70%, #0a0a1a 100%);
+    padding: 6rem 1.5rem;
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.stars-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(1px 1px at 10% 20%, rgba(255, 255, 255, 0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 30% 70%, rgba(255, 255, 255, 0.4) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 50% 10%, rgba(167, 139, 250, 0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 40%, rgba(255, 255, 255, 0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 90% 80%, rgba(255, 255, 255, 0.3) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 15% 50%, rgba(139, 92, 246, 0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 40% 30%, rgba(255, 255, 255, 0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 60% 60%, rgba(255, 255, 255, 0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 80% 15%, rgba(167, 139, 250, 0.3) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 25% 85%, rgba(255, 255, 255, 0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 85% 55%, rgba(255, 255, 255, 0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 5% 90%, rgba(139, 92, 246, 0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 55% 90%, rgba(255, 255, 255, 0.4) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 95% 30%, rgba(167, 139, 250, 0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 35% 45%, rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+    animation: twinkle-stars 4s ease-in-out infinite alternate;
+}
+
+.nebula-glow {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 600px 400px at 30% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 500px 350px at 70% 40%, rgba(99, 40, 180, 0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 300px 300px at 50% 80%, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
+    animation: nebula-pulse 8s ease-in-out infinite alternate;
+}
+
+/* ============================================
+   RETRO SPACESHIP (16-bit pixel art)
+============================================ */
+
+.retro-ship {
+    position: absolute;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    image-rendering: pixelated;
+    pointer-events: none;
+    filter: drop-shadow(0 0 6px rgba(139, 92, 246, 0.4));
+}
+
+.ship-1 {
+    animation: fly-diagonal-1 18s linear infinite;
+    transform: scale(1);
+    opacity: 0.4;
+}
+
+.ship-2 {
+    animation: fly-diagonal-2 24s linear infinite 8s;
+    transform: scale(0.7);
+    opacity: 0.25;
+}
+
+.ship-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ship-row {
+    display: flex;
+    gap: 0;
+}
+
+.px {
+    width: 4px;
+    height: 4px;
+}
+
+.c1 {
+    background: #6d28d9;
+}
+
+.c2 {
+    background: #7c3aed;
+}
+
+.c3 {
+    background: #8b5cf6;
+}
+
+.c4 {
+    background: #a78bfa;
+}
+
+.c5 {
+    background: #c4b5fd;
+}
+
+.ship-engine {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1px;
+}
+
+.flame {
+    width: 3px;
+    border-radius: 1px;
+}
+
+.flame-1 {
+    height: 6px;
+    background: linear-gradient(to bottom, #f97316, #ef4444);
+    animation: flame-flicker 0.15s ease-in-out infinite alternate;
+}
+
+.flame-2 {
+    height: 10px;
+    background: linear-gradient(to bottom, #facc15, #f97316);
+    animation: flame-flicker 0.12s ease-in-out infinite alternate 0.05s;
+    margin-top: -2px;
+}
+
+.flame-3 {
+    height: 5px;
+    background: linear-gradient(to bottom, #fde047, #facc15);
+    animation: flame-flicker 0.18s ease-in-out infinite alternate 0.1s;
+    margin-top: -2px;
+}
+
+@keyframes fly-diagonal-1 {
+    0% {
+        top: 120%;
+        left: -5%;
+        transform: rotate(-35deg);
+    }
+
+    100% {
+        top: -20%;
+        left: 105%;
+        transform: rotate(-35deg);
+    }
+}
+
+@keyframes fly-diagonal-2 {
+    0% {
+        top: 110%;
+        right: -10%;
+        left: auto;
+        transform: rotate(-25deg) scaleX(-1);
+    }
+
+    100% {
+        top: -15%;
+        right: 110%;
+        left: auto;
+        transform: rotate(-25deg) scaleX(-1);
+    }
+}
+
+@keyframes flame-flicker {
+    0% {
+        opacity: 1;
+        transform: scaleY(1);
+    }
+
+    100% {
+        opacity: 0.6;
+        transform: scaleY(0.8);
+    }
+}
+
+/* ============================================
+   PROJECTILES (Ships firing toward button)
+============================================ */
+
+.projectile {
+    position: absolute;
+    z-index: 3;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.projectile::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #a78bfa, transparent);
+    filter: blur(2px);
+}
+
+/* Projectile colors */
+.p1,
+.p3,
+.p5 {
+    background: #c4b5fd;
+    box-shadow: 0 0 6px #a78bfa, 0 0 12px rgba(139, 92, 246, 0.5);
+}
+
+.p2,
+.p4,
+.p6 {
+    background: #fde047;
+    box-shadow: 0 0 6px #facc15, 0 0 12px rgba(250, 204, 21, 0.5);
+}
+
+/* Trajectory from ship-1 area to button */
+.p1 {
+    animation: shoot-1 2.5s linear infinite;
+}
+
+.p2 {
+    animation: shoot-2 3s linear infinite 0.8s;
+}
+
+.p3 {
+    animation: shoot-3 2.8s linear infinite 1.5s;
+}
+
+/* Trajectory from ship-2 area to button */
+.p4 {
+    animation: shoot-4 2.6s linear infinite 0.4s;
+}
+
+.p5 {
+    animation: shoot-5 3.2s linear infinite 1.2s;
+}
+
+.p6 {
+    animation: shoot-6 2.4s linear infinite 2s;
+}
+
+/* Ship-1 fires from top-right toward center-bottom */
+@keyframes shoot-1 {
+    0% {
+        top: 15%;
+        left: 75%;
+        opacity: 0;
+    }
+
+    5% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        top: 68%;
+        left: 50%;
+        opacity: 0;
+    }
+}
+
+@keyframes shoot-2 {
+    0% {
+        top: 25%;
+        left: 65%;
+        opacity: 0;
+    }
+
+    5% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        top: 68%;
+        left: 48%;
+        opacity: 0;
+    }
+}
+
+@keyframes shoot-3 {
+    0% {
+        top: 10%;
+        left: 80%;
+        opacity: 0;
+    }
+
+    5% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        top: 68%;
+        left: 52%;
+        opacity: 0;
+    }
+}
+
+/* Ship-2 fires from bottom-left toward center */
+@keyframes shoot-4 {
+    0% {
+        top: 35%;
+        left: 15%;
+        opacity: 0;
+    }
+
+    5% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        top: 68%;
+        left: 49%;
+        opacity: 0;
+    }
+}
+
+@keyframes shoot-5 {
+    0% {
+        top: 45%;
+        left: 25%;
+        opacity: 0;
+    }
+
+    5% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        top: 68%;
+        left: 51%;
+        opacity: 0;
+    }
+}
+
+@keyframes shoot-6 {
+    0% {
+        top: 30%;
+        left: 20%;
+        opacity: 0;
+    }
+
+    5% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        top: 68%;
+        left: 50%;
+        opacity: 0;
+    }
+}
+
+/* ============================================
+   IMPACT FLASH on button
+============================================ */
+
+.impact-flash {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50px;
+    background: radial-gradient(circle, rgba(196, 181, 253, 0.6), transparent 70%);
+    opacity: 0;
+    pointer-events: none;
+    animation: impact-burst 2.5s ease-out infinite;
+}
+
+@keyframes impact-burst {
+
+    0%,
+    75% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    80% {
+        opacity: 0.8;
+        transform: scale(1.1);
+    }
+
+    85% {
+        opacity: 0.4;
+        transform: scale(1.2);
+    }
+
+    90% {
+        opacity: 0.6;
+        transform: scale(1.05);
+    }
+
+    95% {
+        opacity: 0.2;
+        transform: scale(1.15);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+}
+
+/* Impact sparks */
+.game-btn::after {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50px;
+    background:
+        radial-gradient(1px 1px at 20% 30%, #c4b5fd, transparent),
+        radial-gradient(1px 1px at 80% 25%, #fde047, transparent),
+        radial-gradient(1px 1px at 50% 80%, #a78bfa, transparent),
+        radial-gradient(1px 1px at 30% 70%, #facc15, transparent),
+        radial-gradient(1px 1px at 70% 60%, #c4b5fd, transparent);
+    opacity: 0;
+    pointer-events: none;
+    animation: sparks 2.5s ease-out infinite;
+}
+
+@keyframes sparks {
+
+    0%,
+    78% {
+        opacity: 0;
+    }
+
+    82% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+/* Button shake on impact */
+.game-btn {
+    animation: game-btn-glow 2s ease-in-out infinite alternate, btn-shake 2.5s ease-in-out infinite;
+}
+
+@keyframes btn-shake {
+
+    0%,
+    78% {
+        transform: translateX(0);
+    }
+
+    80% {
+        transform: translateX(-1px);
+    }
+
+    82% {
+        transform: translateX(1px);
+    }
+
+    84% {
+        transform: translateX(-1px);
+    }
+
+    86% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.about-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 700px;
+}
+
+.about-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
+    color: #a78bfa;
+}
+
+.channels-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.channels-header h2 {
+    font-family: 'Silkscreen', cursive;
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    color: #fff;
+    text-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+}
+
+.about-content h2 {
+    font-family: 'Silkscreen', cursive;
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    color: #fff;
+    text-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+    margin-bottom: 0.5rem;
+}
+
+.about-subtitle {
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 1.5rem;
+}
+
+.channels-header p {
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 0.5rem;
+}
+
+.channels-grid {
+    display: grid;
+    gap: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.channel-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 1.5rem;
+    backdrop-filter: blur(10px);
+    transition: all 0.4s ease;
+    text-decoration: none;
+}
+
+.channel-card:hover {
+    background: rgba(139, 92, 246, 0.1);
+    border-color: rgba(139, 92, 246, 0.3);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 60px rgba(124, 58, 237, 0.15);
+}
+
+.channel-card img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(139, 92, 246, 0.3);
+    transition: all 0.4s ease;
+}
+
+.channel-card:hover img {
+    border-color: rgba(139, 92, 246, 0.8);
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.4);
+}
+
+.channel-card .name {
+    color: #fff;
+    font-weight: 600;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+}
+
+.channel-card .subs {
+    font-family: 'Silkscreen', cursive;
+    font-size: 0.75rem;
+    color: #a78bfa;
+    margin-top: 0.4rem;
+}
+
+/* ============================================
+   GAME BUTTON (Animated)
+============================================ */
+
+.game-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 2.5rem;
+    padding: 0.9rem 2.2rem;
+    font-family: 'Silkscreen', cursive;
+    font-size: 0.875rem;
+    color: #fff;
+    background: linear-gradient(135deg, #15803d, #22c55e);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-radius: 50px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 25px rgba(34, 197, 94, 0.25);
+    position: relative;
+    overflow: hidden;
+    animation: game-btn-glow 2s ease-in-out infinite alternate;
+}
+
+.game-btn-pulse {
+    position: absolute;
+    inset: -2px;
+    border-radius: 50px;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.4), rgba(21, 128, 61, 0.2));
+    animation: pulse-ring 2s ease-out infinite;
+    pointer-events: none;
+}
+
+.game-btn::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+    transform: rotate(45deg);
+    transition: 0.6s;
+}
+
+.game-btn:hover::before {
+    left: 100%;
+}
+
+.game-btn:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 0 45px rgba(34, 197, 94, 0.5), 0 8px 30px rgba(34, 197, 94, 0.2);
+    border-color: rgba(34, 197, 94, 0.6);
+    background: linear-gradient(135deg, #16a34a, #4ade80);
+}
+
+.game-btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.game-btn:hover .game-btn-icon {
+    background: rgba(255, 255, 255, 0.22);
+    transform: scale(1.1) rotate(5deg);
+}
+
+.v2-btn {
+    margin-top: 30px;
+    padding: 10px;
+}
+
+@keyframes game-btn-glow {
+    0% {
+        box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
+    }
+
+    100% {
+        box-shadow: 0 0 30px rgba(34, 197, 94, 0.35);
+    }
+}
+
+@keyframes pulse-ring {
+    0% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: scale(1.08);
+        opacity: 0;
+    }
+}
+
+/* ============================================
+   FOOTER
+============================================ */
+
+.site-footer {
+    background: #050510;
+    padding: 2rem;
+    text-align: center;
+}
+
+.site-footer span {
+    font-family: 'Silkscreen', cursive;
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.25);
+}
+
+/* ============================================
+   PARTICLES
+============================================ */
+
+.particles {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(139, 92, 246, 0.6);
+    border-radius: 50%;
+    animation: float-up linear infinite;
+}
+
+/* ============================================
+   KEYFRAMES
+============================================ */
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes twinkle-stars {
+    0% {
+        opacity: 0.6;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes nebula-pulse {
+    0% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 0.8;
+    }
+}
+
+@keyframes float-up {
+    0% {
+        transform: translateY(100vh) scale(0);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-10vh) scale(1);
+        opacity: 0;
+    }
+}

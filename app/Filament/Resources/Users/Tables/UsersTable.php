@@ -42,13 +42,11 @@ class UsersTable
                     ->circular()
                     ->disk('public')
                     ->stacked()
-                    ->limit(3)
-                    ->defaultImageUrl(asset('default-brand.png')),
+                    ->limit(3),
 
                 TextColumn::make('channel.title')
-                    ->label('Canal')->description(function (User $record){
-                        return $record->channel->name;
-                    })
+                    ->label('Canal')
+                    ->description(fn($record) => $record?->channel?->name)
                     ->tooltip('Canal no YouTube'),
 
                 TextColumn::make('created_at')
@@ -78,7 +76,7 @@ class UsersTable
 
                 Filter::make('email_verified')
                     ->label('E-mail verificado')
-                    ->query(fn (Builder $query) => $query->whereNotNull('email_verified_at'))
+                    ->query(fn(Builder $query) => $query->whereNotNull('email_verified_at'))
             ])
             ->filtersTriggerAction(
                 fn(Action $action) => $action

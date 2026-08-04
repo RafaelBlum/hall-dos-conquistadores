@@ -2,6 +2,13 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
+    <a href="{{ route('app.home') }}" class="flex items-center gap-2 text-sm text-indigo-400 hover:text-indigo-300 transition-colors mb-6">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Voltar ao início
+    </a>
+
     <form method="POST" action="{{ route('login') }}">
         @csrf
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Exception;
 use App\Models\Campaign;
 use App\Models\Channel;
@@ -12,24 +13,45 @@ use Illuminate\Support\Facades\Auth;
 class WebController extends Controller
 {
 
-    public function templateTest()
-    {
-        $channels = Channel::all();
-
-        $campings = Campaign::where('camping', true)->get();
-
-        $grid = $channels->count();
-        return view('campaings.template', compact('channels', 'campings', 'grid'));
-    }
 
     public function landing()
     {
-        try{
-            $channels = Channel::withCount('followers')->limit(4)->get();
-            $grid = $channels->count();
+        try {
+            return view('landing');
+        } catch (Exception $exception) {
+            report($exception);
+            return redirect()->back();
+        }
+    }
 
-            return view('landing', compact('channels',  'grid'));
-        }catch (Exception $exception){
+    public function landing2()
+    {
+        try {
+            return view('landing2');
+        } catch (Exception $exception) {
+            report($exception);
+            return redirect()->back();
+        }
+    }
+
+    public function gameIntruderUsers()
+    {
+        try {
+            $users = User::all(['id', 'name']);
+            return view('game', compact('users'));
+        } catch (Exception $exception) {
+            report($exception);
+            return redirect()->back();
+        }
+    }
+
+    public function gameIntruderUsersV2()
+    {
+        try {
+            $users = User::all(['id', 'name']);
+            $authUser = auth()->user();
+            return view('game2', compact('users', 'authUser'));
+        } catch (Exception $exception) {
             report($exception);
             return redirect()->back();
         }
@@ -37,29 +59,30 @@ class WebController extends Controller
 
     public function home()
     {
-        try{
+        try {
             $followedChannels = [];
 
-            if(auth()->check())
-            {
+            if (auth()->check()) {
                 $followedChannels = auth()->user()->following()->withCount('followers')->get();
             }
 
             $suggestedChannels = Channel::withCount('followers')
-                ->whereDoesntHave('followers', function ($query){
-                $query->where('user_id', \auth()->id());
-            })
+                ->whereDoesntHave('followers', function ($query) {
+                    $query->where('user_id', \auth()->id());
+                })
                 ->limit(5)
                 ->get();
 
             $section = false;
-            $channels = Channel::withCount('followers')->limit(4)->get();
+            $channels = Channel::withCount('followers')->inRandomOrder()->limit(4)->get();
             $grid = $channels->count();
 
             $posts = Post::where('status', 'published')
-            ->latest()
-            ->limit(6)
-            ->get();
+                ->with(['author', 'author.channel', 'category'])
+                ->withCount(['likes', 'allComments'])
+                ->latest()
+                ->limit(6)
+                ->get();
 
             return view('home', compact(
                 'posts',
@@ -69,7 +92,7 @@ class WebController extends Controller
                 'followedChannels',
                 'suggestedChannels'
             ));
-        }catch (Exception $exception){
+        } catch (Exception $exception) {
             report($exception);
             return redirect()->back();
         }

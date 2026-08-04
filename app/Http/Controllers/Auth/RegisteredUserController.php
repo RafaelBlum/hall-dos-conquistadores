@@ -33,8 +33,7 @@ class RegisteredUserController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): RedirectResponse
-    {
-//        $response = Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+    { //        $response = Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
 //            'secret' => config('services.turnstile.secret'),
 //            'response' => $request->input('cf-turnstile-response'),
 //            'remoteip' => $request->ip(),
@@ -46,7 +45,7 @@ class RegisteredUserController extends Controller
 
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -54,11 +53,14 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'panel' => PanelTypeEnum::APP,
+            'panel' => PanelTypeEnum::SUBSCRIBER,
         ]);
 
         event(new Registered($user));
-        Auth::login($user);
+
+        if ($user->email_verified_at === null) {
+            Auth::login($user);
+        }
 
         return redirect()->route('verification.notice');
     }

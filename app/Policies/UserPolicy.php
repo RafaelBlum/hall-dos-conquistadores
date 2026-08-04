@@ -14,7 +14,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->panel, [PanelTypeEnum::ADMIN, PanelTypeEnum::SUPER_ADMIN]);
+        return in_array($user->panel, [PanelTypeEnum::CHANNEL, PanelTypeEnum::SUPER_ADMIN]);
     }
 
     /**
@@ -32,7 +32,7 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->panel, [PanelTypeEnum::ADMIN, PanelTypeEnum::SUPER_ADMIN]);
+        return in_array($user->panel, [PanelTypeEnum::CHANNEL, PanelTypeEnum::SUPER_ADMIN]);
     }
 
     /**
@@ -40,12 +40,11 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        if($model->panel === PanelTypeEnum::SUPER_ADMIN && $user->id !== $model->id)
-        {
+        if ($model->panel === PanelTypeEnum::SUPER_ADMIN && $user->id !== $model->id) {
             return false;
         }
 
-        if ($model->panel === PanelTypeEnum::APP) {
+        if ($model->panel === PanelTypeEnum::SUBSCRIBER) {
             return $user->panel === PanelTypeEnum::SUPER_ADMIN;
         }
 

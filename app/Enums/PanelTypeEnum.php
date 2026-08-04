@@ -9,9 +9,9 @@ use Filament\Support\Contracts\HasLabel;
 
 enum PanelTypeEnum: string implements HasLabel, HasColor, HasIcon
 {
-    case SUPER_ADMIN  =   "super-admin";
-    case ADMIN  =   "admin";
-    case APP    =   "app";
+    case SUPER_ADMIN = "super-admin";
+    case CHANNEL = "channel";
+    case SUBSCRIBER = "subscriber";
 
 
 
@@ -19,28 +19,27 @@ enum PanelTypeEnum: string implements HasLabel, HasColor, HasIcon
     {
         return match ($this) {
             self::SUPER_ADMIN => 'Super Administrador',
-            self::ADMIN => 'Administrador',
-            self::APP => 'Usuário',
+            self::CHANNEL => 'Canal',
+            self::SUBSCRIBER => 'Inscrito',
         };
     }
 
 
-    public function getColor(): string | array | null
+    public function getColor(): string|array|null
     {
         return match ($this) {
             self::SUPER_ADMIN => 'success',
-            self::ADMIN => 'success',
-            self::APP => 'warning',
+            self::CHANNEL => 'success',
+            self::SUBSCRIBER => 'warning',
         };
     }
 
     public function getIcon(): ?string
     {
-        return match($this)
-        {
+        return match ($this) {
             self::SUPER_ADMIN => 'heroicon-o-check-badge',
-            self::ADMIN => 'heroicon-o-shield-check',
-            self::APP   => 'heroicon-o-users',
+            self::CHANNEL => 'heroicon-o-shield-check',
+            self::SUBSCRIBER => 'heroicon-o-users',
         };
     }
 }

@@ -1,71 +1,69 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        @include('components.partials.favicon')
-        <title>{{config('app.name')}}</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-        <style>
-            body { font-family: 'Outfit', sans-serif; }
-            .font-pixel { font-family: 'Silkscreen', cursive; }
-        </style>
-    </head>
-    <body id="bg-cover" class="font-sans antialiased bg-white text-gray-900 bg-no-repeat bg-cover bg-opacity-200" style="overflow: hidden;"> <!-- Adição: Adicionando overflow: hidden para remover a barra de rolagem -->
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" style="scroll-behavior: smooth;">
 
+<head>
+    <meta charset="UTF-8">
+    @include('components.partials.favicon')
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{config('app.name')}}</title>
+    @vite(['resources/css/landing.css'])
+    @livewireStyles
+</head>
 
-    <div class="relative isolate px-6 pt-14 lg:px-8 text-white">
+<body class="antialiased bg-[#0a0a1a] text-white" style="overflow-x: hidden;">
 
-        <div class="mx-auto max-w-screen-md py-30 sm:py-10 md:py-28 lg:py-28">
+    <section class="hero-wrapper">
+        <div class="hero-overlay"></div>
 
-            <div class="flex flex-col items-center text-center">
-                <img src="{{asset('images/brandname/horizontal-retrocommunity.png')}}" alt="" class="up" />
-
-                <h3 class="text-4xl font-bold tracking-tight font-pixel dir">Games e informações</h3>
-                <p class="mt-6 text-lg leading-8 esq">
-                    Com uma comunidade unida, você encontrará uma vasta coleção de <em class="text-blue-400 bold">informações sobre jogos clássicos</em>, <em class="text-blue-400 bold">lives da galera no YouTube</em>, análises detalhadas
-                    e até histórias curiosas e guias de gameplay. Além disso, o <em class="text-blue-400 bold">Retrô Community</em> mantém você atualizado
-                    sobre campanhas, lançamentos, eventos e tendências.
-                </p>
-
-                <div class="mt-10 flex items-center justify-center gap-x-6 up">
-                    <a href="{{route('app.home')}}" class="rounded-md animate-bounce font-pixel bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                        Acesse agora!
-                    </a>
+        <div class="particles">
+            @for($i = 0; $i < 30; $i++)
+                <div class="particle" style="left: {{ rand(0, 100) }}%; width: {{ rand(2, 6) }}px; 
+                    height: {{ rand(2, 6) }}px; animation-duration: {{ rand(5, 15) }}s; animation-delay: {{ rand(0, 10) }}s;
+                    background: rgba({{ rand(100, 200) }}, {{ rand(50, 120) }}, {{ rand(200, 255) }}, 0.5); ">
                 </div>
-            </div>
-
-            <section class="mt-20">
-                <div class="max-w-screen-xl mx-auto">
-                    <ul class="grid gap-8 lg:gap-4 sm:grid-cols-2 md:grid-cols-{{$grid}} lg:grid-cols-{{$grid}}">
-                        @foreach($channels as $channel)
-                            <li class="flex flex-col items-center gap-1 text-center up">
-                                <a href="{{'https://www.youtube.com/@' . $channel->link}}" target="_blank" class="font-light text-white hover:underline">
-                                    <img src="{{Storage::url($channel->brand)}}" alt="{{$channel->title}}" class="w-28 h-28 p-[0.1875rem] rounded-full ring-1 ring-slate-900/10 shadow overflow-hidden flex-none" />
-                                </a>
-                                <a href="{{'https://www.youtube.com/@' . $channel->link}}" target="_blank" class="text-sm font-light text-white">
-                                    {{$channel->title}}
-                                </a>
-
-                                <p class="text-sm font-pixel text-secondary">
-                                    {{ $channel->followers_count }}
-                                    {{ $channel->followers_count == 1 ? 'inscrito' : 'inscritos' }}
-                                </p>
-                            </li>
-                        @endforeach
-
-                    </ul>
-                </div>
-
-                <footer class="py-16 text-center text-sm text-black font-pixel">
-                    Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
-                </footer>
-            </section>
+            @endfor
         </div>
 
-    </div>
+        <div class="hero-content">
+            <div class="logo-pulse">
+                <img src="{{asset('images/brandname/Hall-dos-conquistadores.png')}}" alt="Hall dos Conquistadores"
+                    class="hero-logo w-72 md:w-72 mb-6" />
+            </div>
+            <h1 class="hero-title font-pixel">Games e desafios</h1>
+            <p class="hero-subtitle">
+                O <span class="text-violet-400 font-semibold">Hall dos Conquistadores</span> é uma plataforma inovadora
+                projetada para elevar a presença digital de criadores de conteúdo e entusiastas de RetroAchievements.
+                Unimos a paixão pelos desafios clássicos à dinâmica do YouTube, oferecendo um ecossistema que prioriza
+                a segurança, a escalabilidade e o respeito mútuo.
+            </p>
+            <div class="hero-cta">
+                <a href="{{route('app.home')}}" class="btn-hero">
+                    Acesse agora
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                        <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                </a>
+            </div>
 
-    </body>
+            <a href="#about" class="scroll-indicator">
+                <div class="scroll-mouse">
+                    <div class="scroll-wheel"></div>
+                </div>
+                <span class="scroll-text">Explore</span>
+            </a>
+        </div>
+    </section>
+
+    <x-game.game-ship />
+
+    <footer class="site-footer">
+        <span>Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})</span>
+        <span>Desenvolvido por <a href="https://github.com/RafaelBlum">Rafael Blum</a></span>
+        <span> - Hall dos Conquistadores {{ date('Y') }}</span>
+    </footer>
+    @livewireScripts
+</body>
 
 </html>

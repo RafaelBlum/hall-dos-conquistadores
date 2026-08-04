@@ -1,5 +1,4 @@
 @import 'tailwindcss';
-@import './retro-login.css';
 @source "../views";
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -18,7 +17,7 @@
 
 #bg-cover {
     @apply h-screen pb-14 bg-right bg-cover;
-    background-image: url('/public/images/landing/background2.jpg');
+    background-image: url('/images/landing/background2.jpg');
 }
 
 /*
@@ -62,6 +61,47 @@
 
 .vertical-loop-animation-img {
     animation: verticalLoopImg 7s infinite;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+        transform: rotate(-6deg);
+    }
+
+    20%,
+    40%,
+    60%,
+    80% {
+        transform: rotate(6deg);
+    }
+}
+
+.animate-shake {
+    animation: shake 2s ease-in-out infinite;
+}
+
+@keyframes spin-slow {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-spin-slow {
+    animation: spin-slow 20s linear infinite;
 }
 
 .filament-modal {

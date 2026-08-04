@@ -13,11 +13,11 @@
         "alpinejs": "^3.15.8",
         "autoprefixer": "^10.4.27",
         "axios": "^1.13.6",
-        "laravel-vite-plugin": "^2.1",
+        "laravel-vite-plugin": "^3.0",
         "postcss": "^8.4.31",
         "postcss-nesting": "^14.0.0",
-        "tailwindcss": "^4.2.1",
-        "vite": "^8.0.1"
+        "tailwindcss": "^4.2.2",
+        "vite": "^7.1.12"
     },
     "dependencies": {
         "alpinejs": "^3.15.8",

@@ -12,7 +12,7 @@ class CampaingController extends Controller
 
         $campings = Campaign::all();
 
-        return view('campaings.home-campaing', compact('campings'));
+        return view('campaings.index', compact('campings'));
     }
 
 }

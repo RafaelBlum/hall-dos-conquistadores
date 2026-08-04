@@ -1,5 +1,4 @@
 
-
 document.addEventListener('alpine:init', () => {
     Alpine.data('roletaComponent', (names) => ({
         names: names,

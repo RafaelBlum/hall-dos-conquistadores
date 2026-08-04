@@ -4,8 +4,6 @@ namespace App\Providers\Filament;
 
 use Filament\Facades\Filament;
 use Filament\Pages\Dashboard;
-use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
 use App\Filament\Pages\Auth\EditProfile;
 use App\Filament\Pages\Profile;
 use App\Livewire\ContactForm;
@@ -36,16 +34,16 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->routes(function (){
+            ->routes(function () {
                 Route::get('/contato', ContactForm::class);
             })
             ->default()
             ->id('admin')
             ->path('admin')
             ->brandName(config('app.name'))
-            ->brandLogo(fn () => view('filament.logo'))
-            ->favicon(asset('images/brandname/favicon-retrocommunity.png'))
-//            ->login()
+            ->brandLogo(fn() => view('filament.logo'))
+            ->favicon(asset('images/brandname/favicon-hall-dos-conquistadores.png'))
+            //            ->login()
             ->sidebarCollapsibleOnDesktop()
             ->colors([
                 'primary' => Color::Amber,
@@ -67,7 +65,7 @@ class AdminPanelProvider extends PanelProvider
                 'profile' => MenuItem::make()
                     ->label(fn() => Auth::user()->name)
                     ->icon('heroicon-o-user-circle')
-                    ->url(static fn (): string => route(Profile::getRouteName(Filament::getPanel('admin')))),
+                    ->url(static fn(): string => route(Profile::getRouteName(Filament::getPanel('admin')))),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
@@ -77,8 +75,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
+                \App\Filament\Widgets\StatsOverviewWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

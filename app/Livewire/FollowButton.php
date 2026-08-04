@@ -7,33 +7,45 @@ use Livewire\Component;
 
 class FollowButton extends Component
 {
-    public Channel $channel;
+    public $channelId;
+    public $channelName;
+    public $isFollowing = false;
+    public $followersCount = 0;
+
+    public function mount(Channel $channel)
+    {
+        $this->channelId = $channel->id;
+        $this->channelName = $channel->name;
+        $this->followersCount = $channel->followers()->count();
+        $this->checkFollowing();
+    }
+
+    public function checkFollowing()
+    {
+        $this->isFollowing = auth()->check()
+            ? auth()->user()->following()->where('channel_id', $this->channelId)->exists()
+            : false;
+    }
 
     public function toggleFollow()
     {
-        if(auth()->guest())
-        {
+        if (auth()->guest()) {
             return redirect()->route('login');
         }
 
         $user = auth()->user();
 
-        if($user->channel && $user->channel->id === $this->channel->id)
-        {
+        if ($user->channel && $user->channel->id === $this->channelId) {
             return;
         }
 
-        auth()->user()->following()->toggle($this->channel->id);
+        auth()->user()->following()->toggle($this->channelId);
+        $this->checkFollowing();
+        $this->followersCount = Channel::find($this->channelId)->followers()->count();
     }
 
     public function render()
     {
-        $isFollowing = auth()->check()
-            ? auth()->user()->following()->where('channel_id', $this->channel->id)->exists()
-            : false;
-
-        return view('livewire.follow-button', [
-            'isFollowing' => $isFollowing
-        ]);
+        return view('livewire.follow-button');
     }
 }

@@ -44,7 +44,7 @@ class AppServiceProvider extends ServiceProvider
                 ->line('Para começar a curtir, comentar e seguir canais, clique no botão abaixo:')
                 ->action('Verificar E-mail', $url)
                 ->line('Se você não criou esta conta, ignore este e-mail.')
-                ->salutation('Atenciosamente, Equipe Retro Community');
+                ->salutation('Atenciosamente, Equipe Hall dos Conquistadores');
         });
     }
 }

@@ -62,9 +62,9 @@ class UserForm
                                     ->live(onBlur: true)
                                     ->rule(['min:2', 'max:150'])
                                     ->validationMessages([
-                                        'required'  => 'O nome completo é obrigatório',
-                                        'min'       => 'O nome deve ter pelo menos :min caracteres',
-                                        'max'       => 'O nome não pode ter mais de :max caracteres',
+                                        'required' => 'O nome completo é obrigatório',
+                                        'min' => 'O nome deve ter pelo menos :min caracteres',
+                                        'max' => 'O nome não pode ter mais de :max caracteres',
                                     ])
                                     ->helperText(fn($get) => $get('name_error') ?? 'Informe seu nome e sobrenome.')
                                     ->live(onBlur: true),
@@ -79,11 +79,9 @@ class UserForm
                                     ->live(onBlur: true)
                                     ->unique(ignoreRecord: true)
                                     ->afterStateUpdated(function ($state, callable $set) {
-                                        if(!filter_var($state, FILTER_VALIDATE_EMAIL) && filled($state))
-                                        {
+                                        if (!filter_var($state, FILTER_VALIDATE_EMAIL) && filled($state)) {
                                             $set('email_error', 'O e-mail inserido não é valido.');
-                                        }else
-                                        {
+                                        } else {
                                             $set('email_error', null);
                                         }
                                     })
@@ -115,7 +113,7 @@ class UserForm
                                         'max' => 'A senha não pode ter mais de :max caracteres.',
                                         'regex' => 'A senha deve conter pelo menos uma letra maiúscula, um número e um caractere especial.',
                                     ])
-                                    ->visible(fn (string $operation) => in_array($operation, ['create', 'edit']))
+                                    ->visible(fn(string $operation) => in_array($operation, ['create', 'edit']))
                                     ->suffixIcon('heroicon-o-lock-closed')
 
                                     ->helperText(fn($get, $operation) => self::passwordHelper($get, $operation))
@@ -136,8 +134,8 @@ class UserForm
                             Group::make()->schema([
                                 Toggle::make('email_verified_at')
                                     ->label('E-mail Verificado')
-                                    ->dehydrateStateUsing(fn ($state) => $state ? now() : null)
-                                    ->afterStateHydrated(fn ($component, $state) => $component->state(filled($state))),
+                                    ->dehydrateStateUsing(fn($state) => $state ? now() : null)
+                                    ->afterStateHydrated(fn($component, $state) => $component->state(filled($state))),
                             ])->columnSpan(2),
                         ])->columnSpanFull(),
 
@@ -161,8 +159,9 @@ class UserForm
                     ->tabs([
                         Tab::make('Dados do Canal')
                             ->icon('heroicon-m-identification')
-                            ->visible(fn ($get, $record) =>
-                                $get('panel') !== \App\Enums\PanelTypeEnum::APP->value
+                            ->visible(
+                                fn($get, $record) =>
+                                $get('panel') !== \App\Enums\PanelTypeEnum::SUBSCRIBER->value
                             )
                             ->schema([
                                 Group::make()
@@ -190,7 +189,7 @@ class UserForm
                                             ->imageEditor()
                                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg', 'image/avif'])
                                             ->preserveFilenames()
-//                                            ->dehydrateStateUsing(fn ($state) => $state)
+                                            //                                            ->dehydrateStateUsing(fn ($state) => $state)
                                             ->columnSpan(2),
 
                                         Group::make()->schema([
@@ -249,7 +248,7 @@ class UserForm
                                                         ])
                                                         ->helperText('Informe apenas o identificador do canal, sem "@" nem espaços. Ex: "MeuCanal123".')
                                                         ->live(onBlur: true)
-                                                        ->afterStateUpdated(function (callable $set, $state){
+                                                        ->afterStateUpdated(function (callable $set, $state) {
                                                             $username = str($state)
                                                                 ->remove(['https://www.youtube.com/', '@'])
                                                                 ->trim();
@@ -306,28 +305,28 @@ class UserForm
                                                     ->label('Título da Campanha')
                                                     ->placeholder('Digite o título da campanha')
                                                     ->maxLength(100)
-                                                    ->required(fn ($get)=> self::isCampaignStarted($get)),
+                                                    ->required(fn($get) => self::isCampaignStarted($get)),
 
                                                 Textarea::make('content')
                                                     ->label('Descrição')
                                                     ->rows(10)
                                                     ->autosize()
-                                                    ->required(fn ($get)=> self::isCampaignStarted($get)),
+                                                    ->required(fn($get) => self::isCampaignStarted($get)),
 
                                                 TextInput::make('qr_code')
                                                     ->label('Link ou URL do QRcODE')
                                                     ->placeholder('https://...')
-                                                    ->required(fn ($get)=> self::isCampaignStarted($get)),
+                                                    ->required(fn($get) => self::isCampaignStarted($get)),
 
                                                 TextInput::make('goal_link')
                                                     ->label('Link ou URL da Campanha')
                                                     ->placeholder('https://...')
-                                                    ->required(fn ($get)=> self::isCampaignStarted($get)),
+                                                    ->required(fn($get) => self::isCampaignStarted($get)),
 
                                                 TextInput::make('pix_page_link')
                                                     ->label('Link da página de pix')
                                                     ->placeholder('https://...')
-                                                    ->required(fn ($get)=> self::isCampaignStarted($get)),
+                                                    ->required(fn($get) => self::isCampaignStarted($get)),
                                             ])->columnSpan(5),
                                     ]),
                             ]),
@@ -339,28 +338,28 @@ class UserForm
                             ]),
 
 
-                ])->persistTab(),
+                    ])->persistTab(),
 
             ])->columns([
-                'default' => 1,
-                'sm' => 1,
-                'md' => 1,
-                'lg' => 2,
-                'xl' => 1,
-                '2xl' => 1
-            ]);
+                    'default' => 1,
+                    'sm' => 1,
+                    'md' => 1,
+                    'lg' => 2,
+                    'xl' => 1,
+                    '2xl' => 1
+                ]);
     }
 
     /**
      * Method verifica preenchimento de campos
-    */
+     */
     public static function isCampaignStarted($get): bool
     {
         return filled($get('title')) ||
-               filled($get('content')) ||
-               filled($get('qr_code')) ||
-               filled($get('goal_link')) ||
-               filled($get('pix_page_link'));
+            filled($get('content')) ||
+            filled($get('qr_code')) ||
+            filled($get('goal_link')) ||
+            filled($get('pix_page_link'));
     }
 
     public static function passwordHelper($get, string $operation): string
