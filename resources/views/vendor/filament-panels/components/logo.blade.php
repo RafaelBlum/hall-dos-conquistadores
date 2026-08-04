@@ -1,15 +1,55 @@
-@if(Route::current()->getName() === 'filament.admin.auth.login')
-    <img src="{{asset('images/brandname/logo-hall-dos-conquistadores-dark.png')}}"
-         alt="{{config('app.name')}}"
-         title="{{config('app.name')}}"
-         width="220"
-    >
-@else
-    <img src="{{asset('images/brandname/horizontal-hall-dos-conquistadores.png')}}"
-         alt="{{config('app.name')}}"
-         title="{{config('app.name')}}"
-         width="200"
-    >
-@endif
+@php
+    $brandName = filament()->getBrandName();
+    $brandLogo = filament()->getBrandLogo();
+    $brandLogoHeight = filament()->getBrandLogoHeight() ?? '1.5rem';
+    $darkModeBrandLogo = filament()->getDarkModeBrandLogo();
+    $hasDarkModeBrandLogo = filled($darkModeBrandLogo);
 
-{{-- Precisa somente de uma condição para trocar as logos quando sistema esta dark e light e retirar o style --}}
+    $getLogoClasses = fn (bool $isDarkMode): string => \Illuminate\Support\Arr::toCssClasses([
+        'fi-logo',
+        'fi-logo-light' => $hasDarkModeBrandLogo && (! $isDarkMode),
+        'fi-logo-dark' => $isDarkMode,
+    ]);
+
+    $logoStyles = "height: {$brandLogoHeight}";
+@endphp
+
+@capture($content, $logo, $isDarkMode = false)
+    @if ($logo instanceof \Illuminate\Contracts\Support\Htmlable)
+        <div
+            {{
+                $attributes
+                    ->class([$getLogoClasses($isDarkMode)])
+                    ->style([$logoStyles])
+            }}
+        >
+            {{ $logo }}
+        </div>
+    @elseif (filled($logo))
+        <img
+            alt="{{ __('filament-panels::layout.logo.alt', ['name' => $brandName]) }}"
+            src="{{ $logo }}"
+            {{
+                $attributes
+                    ->class([$getLogoClasses($isDarkMode)])
+                    ->style([$logoStyles])
+            }}
+        />
+    @else
+        <div
+            {{
+                $attributes->class([
+                    $getLogoClasses($isDarkMode),
+                ])
+            }}
+        >
+            {{ $brandName }}
+        </div>
+    @endif
+@endcapture
+
+{{ $content($brandLogo) }}
+
+@if ($hasDarkModeBrandLogo)
+    {{ $content($darkModeBrandLogo, isDarkMode: true) }}
+@endif

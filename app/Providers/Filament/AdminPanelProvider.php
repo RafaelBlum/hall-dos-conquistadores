@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
+use Filament\Support\Enums\Width;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -41,10 +42,10 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->brandName(config('app.name'))
-            ->brandLogo(fn() => view('filament.logo'))
+            ->brandLogo(fn() => view('filament.brand.logo'))
             ->favicon(asset('images/brandname/favicon-hall-dos-conquistadores.png'))
-            //            ->login()
             ->sidebarCollapsibleOnDesktop()
+            ->maxContentWidth(Width::Full)
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -55,17 +56,23 @@ class AdminPanelProvider extends PanelProvider
                     ->group('Links')
                     ->sort(5)->openUrlInNewTab(),
             ])
+            //->userMenuItems([
+            //MenuItem::make()
+            //->label('Configurações')
+            //->url('')
+            //->icon('heroicon-o-cog-6-tooth'),
+            //'logout' => MenuItem::make()
+            //->label('Sair'),
+            //'profile' => MenuItem::make()
+            //->label(fn() => Auth::user()->name)
+            //->icon('heroicon-o-user-circle')
+            //->url(static fn(): string => route(Profile::getRouteName(Filament::getPanel('admin')))),
+            //])
             ->userMenuItems([
-                MenuItem::make()
-                    ->label('Configurações')
-                    ->url('')
-                    ->icon('heroicon-o-cog-6-tooth'),
-                'logout' => MenuItem::make()
-                    ->label('Sair'),
                 'profile' => MenuItem::make()
-                    ->label(fn() => Auth::user()->name)
-                    ->icon('heroicon-o-user-circle')
-                    ->url(static fn(): string => route(Profile::getRouteName(Filament::getPanel('admin')))),
+                    ->label('Meu Perfil')
+                    ->url(fn() => Profile::getUrl())
+                    ->icon('heroicon-m-user-circle'),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
