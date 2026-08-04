@@ -13,12 +13,9 @@ use App\Models\User;
 use Closure;
 use Filament\Actions\Action;
 use Filament\Forms\Components\ColorPicker;
-use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -27,20 +24,16 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Support\Colors\Color;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class Profile extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
     protected static bool $shouldRegisterNavigation = false;
 
@@ -53,7 +46,7 @@ class Profile extends Page implements HasForms
     public function mount(): void
     {
         $this->form->fill(
-            auth()->user()->load('channel.camping')->attributesToArray()
+            auth()->user()->load('channel.campaign')->attributesToArray()
         );
     }
 
@@ -61,330 +54,339 @@ class Profile extends Page implements HasForms
     {
         return $schema
             ->components([
-                Grid::make(9)->schema([
 
-                    FileUpload::make('avatar')
-                        ->label('')
-                        ->default('default.jpg')
-                        ->disk('public')
-                        ->directory('thumbnails')
-                        ->removeUploadedFileButtonPosition('right')
-                        ->openable()
-                        ->columnSpan(3),
+                // ═══════════════════════════════════════════
+                // SEÇÃO 1 — Dados Pessoais
+                // ═══════════════════════════════════════════
+                Section::make('Dados Pessoais')
+                    ->description('Informações da sua conta')
+                    ->icon('heroicon-o-user')
+                    ->schema([
+                        Grid::make(12)->schema([
 
-                    Section::make()->schema([
-                        Grid::make(3)->schema([
-
+                            // Avatar
                             Group::make()->schema([
-                                TextInput::make('name')
-                                    ->label('Nome completo')
-                                    ->required()
-                                    ->maxLength(150)
-                                    ->minLength(2)
-                                    ->reactive()
-                                    ->afterStateUpdated(function ($state, $set) {
-                                        if (strlen($state) < 2 || strlen($state) > 150) {
-                                            $this->validateCaracteres(2, 255);
-                                        }
-                                    }),
-                            ])->columnSpan(1),
-
-                            Group::make()->schema([
-                                TextInput::make('email')
-                                    ->label('E-mail')
-                                    ->email()
-                                    ->required()
-                                    ->maxLength(255)
-                                    ->reactive()
-                                    ->afterStateUpdated(function ($state) {
-                                        if (!filter_var($state, FILTER_VALIDATE_EMAIL) && !empty($state)) {
-                                            Notification::make()
-                                                ->title('E-mail inválido')
-                                                ->body('O e-mail inserido não é válido. Verifique e tente novamente.')
-                                                ->danger()
-                                                ->send();
-                                        }
-
-                                        if(!$this->validateEmaildatabase($state))
-                                        {
-                                            Notification::make()
-                                                ->title('E-mail inválido')
-                                                ->body('O e-mail inserido já esta em uso. Verifique e tente novamente.')
-                                                ->danger()
-                                                ->send();
-                                        }
-                                    }),
-
+                                FileUpload::make('avatar')
+                                    ->label('Foto de perfil')
+                                    ->default('default.jpg')
+                                    ->disk('public')
+                                    ->directory('thumbnails')
+                                    ->removeUploadedFileButtonPosition('right')
+                                    ->openable()
+                                    ->avatar()
+                                    ->columnSpanFull(),
                             ])->columnSpan(2),
-                        ]),
 
-                        Grid::make(8)->schema([
+                            // Campos
                             Group::make()->schema([
-                                Select::make('panel')
-                                    ->label('Tipo de usuário')
-                                    ->options(PanelTypeEnum::class)
-                                    ->native(false)
-                                    ->rules([
-                                        fn(): Closure => function (string $attribute, $value, Closure $fail) {
-                                            if (empty($value)) {
-                                                $fail('Precisa definir o seu tipo de usuário, por favor.');
+                                Grid::make(2)->schema([
+                                    TextInput::make('name')
+                                        ->label('Nome completo')
+                                        ->required()
+                                        ->maxLength(150)
+                                        ->minLength(2)
+                                        ->live(onBlur: true)
+                                        ->afterStateUpdated(function ($state) {
+                                            if (strlen($state) < 2 || strlen($state) > 150) {
+                                                $this->validateCaracteres(2, 150);
                                             }
-                                        },
-                                    ])
-                                    ->required(),
+                                        }),
 
-                            ])->columnSpan(3),
+                                    TextInput::make('email')
+                                        ->label('E-mail')
+                                        ->email()
+                                        ->required()
+                                        ->maxLength(255)
+                                        ->live(onBlur: true)
+                                        ->afterStateUpdated(function ($state) {
+                                            if (!filter_var($state, FILTER_VALIDATE_EMAIL) && !empty($state)) {
+                                                Notification::make()
+                                                    ->title('E-mail inválido')
+                                                    ->body('O e-mail inserido não é válido.')
+                                                    ->danger()
+                                                    ->send();
+                                            }
+                                            if (!$this->validateEmailDatabase($state)) {
+                                                Notification::make()
+                                                    ->title('E-mail em uso')
+                                                    ->body('O e-mail inserido já está em uso.')
+                                                    ->danger()
+                                                    ->send();
+                                            }
+                                        }),
 
-                            Group::make()->schema([
-                                TextInput::make('password')
-                                    ->label('Senha')
-                                    ->password()
-                                    ->revealable()
-                                    ->dehydrated(fn (?string $state): bool => filled($state))
-                                    ->required(fn (string $operation): bool => $operation === 'create')
-                                    ->minLength(8) // Mínimo de 8 caracteres
-                                    ->maxLength(32) // Máximo de 32 caracteres
-                                    ->reactive()
-                                    ->afterStateUpdated(function ($state) {
-                                        if (!preg_match('/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/', $state) && !empty($state)) {
-                                            Notification::make()
-                                                ->title('Senha inválida')
-                                                ->body('A senha deve ter pelo menos 8 caracteres, incluindo uma letra maiúscula, um número e um caractere especial.')
-                                                ->danger()
-                                                ->send();
-                                        }
-                                    }),
-                            ])->columnSpan(5),
+                                    Select::make('panel')
+                                        ->label('Tipo de usuário')
+                                        ->options(PanelTypeEnum::class)
+                                        ->native(false)
+                                        ->rules([
+                                            fn(): Closure => function (string $attribute, $value, Closure $fail) {
+                                                if (empty($value)) {
+                                                    $fail('Precisa definir o seu tipo de usuário.');
+                                                }
+                                            },
+                                        ])
+                                        ->required(),
+
+                                    TextInput::make('password')
+                                        ->label('Nova senha')
+                                        ->password()
+                                        ->revealable()
+                                        ->dehydrated(fn(?string $state): bool => filled($state))
+                                        ->required(fn(string $operation): bool => $operation === 'create')
+                                        ->minLength(8)
+                                        ->maxLength(32)
+                                        ->live(onBlur: true)
+                                        ->afterStateUpdated(function ($state) {
+                                            if (!empty($state) && !preg_match('/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/', $state)) {
+                                                Notification::make()
+                                                    ->title('Senha inválida')
+                                                    ->body('Mínimo 8 caracteres, uma maiúscula, um número e um caractere especial.')
+                                                    ->danger()
+                                                    ->send();
+                                            }
+                                        }),
+                                ]),
+                            ])->columnSpan(10),
+
                         ]),
+                    ]),
 
-                    ])->columnSpan(6),
+                // ═══════════════════════════════════════════
+                // SEÇÃO 2 — Canal
+                // ═══════════════════════════════════════════
+                Section::make('Meu Canal')
+                    ->description('Informações do seu canal do YouTube')
+                    ->icon('heroicon-o-tv')
+                    ->relationship('channel')
+                    ->schema([
+                        Grid::make(12)->schema([
 
-                    Grid::make(8)
-                        ->relationship('channel')
-                        ->schema([
+                            // Logo do canal
+                            Group::make()->schema([
+                                FileUpload::make('brand')
+                                    ->label('Logo do canal')
+                                    ->disk('public')
+                                    ->helperText('Logo do seu canal')
+                                    ->directory('channel_brand')
+                                    ->removeUploadedFileButtonPosition('right')
+                                    ->openable()
+                                    ->avatar()
+                                    ->columnSpanFull(),
+                            ])->columnSpan(2),
 
-                        FileUpload::make('brand')
-                            ->label('')
-                            ->disk('public')
-                            ->debounce()
-                            ->helperText('Logo do seu canal')
-                            ->directory('channel_brand')
-                            ->removeUploadedFileButtonPosition('right')
-                            ->openable()
-                            ->columnSpan(3),
-
-                        Section::make()->schema([
-                            Grid::make(4)->schema([
-                                Group::make()->schema([
+                            // Campos do canal
+                            Group::make()->schema([
+                                Grid::make(2)->schema([
 
                                     TextInput::make('title')
-                                        ->label('Nome do seu canal')
+                                        ->label('Nome do canal')
                                         ->hintIcon('heroicon-m-check-badge', tooltip: 'Seu canal do Youtube.')
                                         ->hintColor(Color::Green)
                                         ->minLength(2)
                                         ->maxLength(255)
-                                        ->reactive()
-                                        ->afterStateUpdated(function ($state, $set) {
+                                        ->live(onBlur: true)
+                                        ->afterStateUpdated(function ($state) {
                                             if (strlen($state) < 2 || strlen($state) > 255) {
                                                 $this->validateCaracteres(2, 255);
                                             }
                                         })
                                         ->required(),
 
-                                ])->columnSpan(2),
-
-                                Group::make()->schema([
                                     TextInput::make('name')
                                         ->label('Seu nome')
                                         ->minLength(2)
                                         ->maxLength(255)
-                                        ->reactive()
-                                        ->afterStateUpdated(function ($state, $set) {
+                                        ->live(onBlur: true)
+                                        ->afterStateUpdated(function ($state) {
                                             if (strlen($state) < 2 || strlen($state) > 255) {
                                                 $this->validateCaracteres(2, 255);
                                             }
                                         })
                                         ->required(),
-                                ])->columnSpan(2),
-                            ])->columnSpanFull(),
 
-                            Grid::make(4)->schema([
-                                Group::make()->schema([
                                     TextInput::make('link')
-                                        ->label('Link canal do Youtube')
-                                        ->hintIcon('heroicon-m-question-mark-circle', tooltip: 'Adicione o nome do seu canal da URL sem "@"')
+                                        ->label('Link do YouTube')
+                                        ->hintIcon('heroicon-m-question-mark-circle', tooltip: 'Nome do canal na URL sem "@"')
                                         ->hintColor(Color::Yellow)
-                                        ->prefix('https://www.youtube.com/@')->suffixIcon('heroicon-m-globe-alt')
+                                        ->prefix('https://www.youtube.com/@')
+                                        ->suffixIcon('heroicon-m-globe-alt')
                                         ->minLength(2)
                                         ->maxLength(255)
-                                        ->reactive()
-                                        ->afterStateUpdated(function ($state, $set) {
+                                        ->live(onBlur: true)
+                                        ->afterStateUpdated(function ($state) {
                                             if (strlen($state) < 2 || strlen($state) > 255) {
                                                 $this->validateCaracteres(2, 255);
                                             }
                                         })
                                         ->required(),
-                                ])->columnSpan(3),
 
-                                Group::make()->schema([
-                                    ColorPicker::make('color'),
-                                ])->columnSpan(1),
-                            ])->columnSpanFull(),
+                                    ColorPicker::make('color')
+                                        ->label('Cor do canal'),
 
-                            Textarea::make('description')
-                                ->label('Descrição')
-                                ->hintIcon('heroicon-m-question-mark-circle', tooltip: 'Descreva brevemente aqui sobre seu canal.')
-                                ->hintColor(Color::Yellow)
-                                ->required(),
-                        ])->columnSpan(5),
+                                    Textarea::make('description')
+                                        ->label('Descrição do canal')
+                                        ->hintIcon('heroicon-m-question-mark-circle', tooltip: 'Descreva brevemente seu canal.')
+                                        ->hintColor(Color::Yellow)
+                                        ->columnSpanFull(),
 
+                                ]),
+                            ])->columnSpan(10),
 
-                        Grid::make(8)->relationship('camping')->schema([
-                            Section::make()->schema([
-                                FileUpload::make('image')
-                                    ->label('')
-                                    ->disk('public')
-                                    ->debounce()
-                                    ->helperText('Imagem da sua campanha, informativa.')
-                                    ->directory('campaing_folder')
-                                    ->image()
-                                    ->imagePreviewHeight('250')
-                                    ->loadingIndicatorPosition('left')
-                                    ->panelAspectRatio('1:1')
-                                    ->panelLayout('integrated')
-                                    ->removeUploadedFileButtonPosition('right')
-                                    ->uploadButtonPosition('left')
-                                    ->uploadProgressIndicatorPosition('left')
-                                    ->openable()
-                                    ->uploadingMessage('Uploading attachment...')
-                                    ->columnSpanFull()
-                            ])->columnSpan(3),
+                        ]),
+                    ]),
 
-                            Section::make()->schema([
-                                Grid::make(10)->schema([
+                // ═══════════════════════════════════════════
+                // SEÇÃO 3 — Campanha
+                // ═══════════════════════════════════════════
+                Section::make('Minha Campanha')
+                    ->description('Configure sua campanha do LivePix')
+                    ->icon('heroicon-o-megaphone')
+                    ->relationship('channel')
+                    ->schema([
+                        Grid::make(1)
+                            ->relationship('campaign')
+                            ->schema([
+                                Grid::make(12)->schema([
+
+                                    // Imagem da campanha
                                     Group::make()->schema([
-                                        Placeholder::make('qrCode')
-                                            ->label('QR Code LivePix')
-                                            ->content(function (Campaign $record) {
+                                        FileUpload::make('image')
+                                            ->label('Imagem da campanha')
+                                            ->disk('public')
+                                            ->helperText('Imagem informativa da campanha')
+                                            ->directory('campaing_folder')
+                                            ->image()
+                                            ->imagePreviewHeight('250')
+                                            ->loadingIndicatorPosition('left')
+                                            ->panelAspectRatio('1:1')
+                                            ->panelLayout('integrated')
+                                            ->removeUploadedFileButtonPosition('right')
+                                            ->uploadButtonPosition('left')
+                                            ->uploadProgressIndicatorPosition('left')
+                                            ->openable()
+                                            ->uploadingMessage('Enviando imagem...')
+                                            ->columnSpanFull(),
+                                    ])->columnSpan(3),
 
-                                                if (is_null($record)) {
-                                                    return 'Nenhum QR Code selecionado';
+                                    // Campos da campanha
+                                    Group::make()->schema([
+                                        Grid::make(2)->schema([
+
+                                            TextInput::make('title')
+                                                ->label('Título da campanha')
+                                                ->minLength(2)
+                                                ->maxLength(255)
+                                                ->live(onBlur: true)
+                                                ->afterStateUpdated(function ($state) {
+                                                    if (strlen($state) < 2 || strlen($state) > 255) {
+                                                        $this->validateCaracteres(2, 255);
+                                                    }
+                                                })
+                                                ->required(),
+
+                                            Toggle::make('camping')
+                                                ->label(function (Get $get) {
+                                                    return $get('camping') ? 'Campanha ativada' : 'Campanha desativada';
+                                                })
+                                                ->live()
+                                                ->columnSpan(1),
+
+                                            TextInput::make('linkGoal')
+                                                ->label('Link campanha status')
+                                                ->hintIcon('heroicon-m-question-mark-circle', tooltip: 'Link da campanha do LivePix')
+                                                ->hintColor(Color::Yellow)
+                                                ->prefixIcon('heroicon-m-currency-dollar')
+                                                ->suffixIcon('heroicon-m-chart-bar')
+                                                ->url()
+                                                ->live(onBlur: true)
+                                                ->afterStateUpdated(function ($state) {
+                                                    if (!empty($state) && !filter_var($state, FILTER_VALIDATE_URL)) {
+                                                        Notification::make()
+                                                            ->title('URL inválida')
+                                                            ->body('O link inserido não é uma URL válida.')
+                                                            ->danger()
+                                                            ->send();
+                                                    }
+                                                })
+                                                ->required()
+                                                ->columnSpanFull(),
+
+                                            TextInput::make('qrCode')
+                                                ->label('Link QR Code LivePix')
+                                                ->hintIcon('heroicon-m-question-mark-circle', tooltip: 'Link do QR Code do LivePix')
+                                                ->hintColor(Color::Yellow)
+                                                ->prefixIcon('heroicon-m-qr-code')
+                                                ->suffixIcon('heroicon-m-viewfinder-circle')
+                                                ->url()
+                                                ->live(onBlur: true)
+                                                ->afterStateUpdated(function ($state) {
+                                                    if (!empty($state) && !filter_var($state, FILTER_VALIDATE_URL)) {
+                                                        Notification::make()
+                                                            ->title('URL inválida')
+                                                            ->body('O link inserido não é uma URL válida.')
+                                                            ->danger()
+                                                            ->send();
+                                                    }
+                                                })
+                                                ->required()
+                                                ->columnSpanFull(),
+
+                                            Textarea::make('content')
+                                                ->label('Descrição da campanha')
+                                                ->required()
+                                                ->columnSpanFull(),
+
+                                        ]),
+                                    ])->columnSpan(5),
+
+                                    // QR Code preview
+                                    Group::make()->schema([
+                                        Placeholder::make('qrCode_preview')
+                                            ->label('Preview QR Code')
+                                            ->content(function (Get $get) {
+                                                $qrCode = $get('qrCode');
+
+                                                if (empty($qrCode)) {
+                                                    return 'Insira o link do QR Code para visualizar.';
+                                                }
+
+                                                $campaign = Campaign::find($get('id'));
+
+                                                if (!$campaign) {
+                                                    return 'Campanha não encontrada.';
                                                 }
 
                                                 return new HtmlString(
-                                                    view('filament.campaing.iframe', ['state' => $record])->render()
+                                                    view('filament.campaing.iframe', ['state' => $campaign])->render()
                                                 );
                                             }),
-                                    ])->columnSpan(4)->hidden(function (Get $get) {
-                                        if ($get('qrCode') === null) {
-                                            return true;
-                                        }
-                                        return false;
-                                    }),
+                                    ])->columnSpan(4)
+                                        ->hidden(fn(Get $get) => empty($get('qrCode'))),
 
-                                    Group::make()->schema([
-
-                                        TextInput::make('title')
-                                            ->label('Titulo')
-                                            ->minLength(2)
-                                            ->maxLength(255)
-                                            ->reactive()
-                                            ->afterStateUpdated(function ($state, $set) {
-                                                if (strlen($state) < 2 || strlen($state) > 255) {
-                                                    $this->validateCaracteres(2, 255);
-                                                }
-                                            })
-                                            ->required(),
-
-                                        Textarea::make('content')
-                                            ->label('Descrição da campanha')
-                                            ->required()
-                                            ->columnSpanFull(),
-
-                                        TextInput::make('linkGoal')
-                                            ->label('Link campanha status')
-                                            ->hintIcon('heroicon-m-question-mark-circle', tooltip: 'Adicione o link da campanha do seu LivePix')
-                                            ->hintColor(Color::Yellow)
-                                            ->prefixIcon('heroicon-m-currency-dollar')->suffixIcon('heroicon-m-chart-bar')
-                                            ->url()
-                                            ->reactive()
-                                            ->afterStateUpdated(function ($state){
-                                                if (!filter_var($state, FILTER_VALIDATE_URL) && !empty($state)) {
-                                                    Notification::make()
-                                                        ->title('URL inválida')
-                                                        ->body('O link inserido não é uma URL válida. Verifique e tente novamente.')
-                                                        ->danger()
-                                                        ->send();
-                                                }
-                                            })
-                                            ->required(),
-
-                                        TextInput::make('qrCode')
-                                            ->label('Link QR Code')
-                                            ->hintIcon('heroicon-m-question-mark-circle', tooltip: 'Adicione o link do seu QRCODE do livePix')
-                                            ->hintColor(Color::Yellow)
-                                            ->prefixIcon('heroicon-m-qr-code')->suffixIcon('heroicon-m-viewfinder-circle')
-                                            ->url()
-                                            ->reactive()
-                                            ->afterStateUpdated(function ($state){
-                                                if (!filter_var($state, FILTER_VALIDATE_URL) && !empty($state)) {
-                                                    Notification::make()
-                                                        ->title('URL inválida')
-                                                        ->body('O link inserido não é uma URL válida. Verifique e tente novamente.')
-                                                        ->danger()
-                                                        ->send();
-                                                }
-                                            })
-                                            ->required(),
-
-
-                                        Toggle::make('camping')
-                                            ->label(function (Get $get){
-                                                if($get('camping') == true){
-                                                    return 'Campanha ativada';
-                                                }
-                                                return 'Campanha desativada';
-                                            })->live(),
-                                    ])->columnSpan(function (Get $get) {
-                                        if ($get('qrCode') === null && !array_key_exists('id', $this->data['channel']['camping'])) {
-                                            return 10;
-                                        }
-                                        return 6;
-                                    }),
-                                ])->columnSpanFull(),
-                            ])->columnSpan(5),
-                        ]),
-
-
-
+                                ]),
+                            ]),
                     ]),
 
-                ]),
             ])
             ->statePath('data')
-            ->model(auth()->user())
-            ->columns([
-                'default' => 2,
-                'sm' => 1,
-                'md' => 2,
-                'lg' => 2,
-                'xl' => 2,
-                '2xl' => 2
-            ]);
+            ->model(auth()->user());
     }
 
     protected function validateCaracteres(int $min, int $max): void
     {
         Notification::make()
             ->title('Erro de validação')
-            ->body('O nome deve ter entre ' . $min . ' e ' . $max .' caracteres.')
+            ->body("O campo deve ter entre {$min} e {$max} caracteres.")
             ->danger()
             ->send();
     }
 
-    protected function validateEmaildatabase(string $email):bool
+    protected function validateEmailDatabase(string $email): bool
     {
-        return !User::where('email', $email)->exists();
+        return !User::where('email', $email)
+            ->where('id', '!=', auth()->id())
+            ->exists();
     }
 
     protected function onValidationError(ValidationException $exception): void
@@ -398,51 +400,50 @@ class Profile extends Page implements HasForms
     protected function getFormActions(): array
     {
         return [
-            Action::make('Salvar modificações')
+            Action::make('salvar')
+                ->label('Salvar modificações')
                 ->color('primary')
                 ->submit('update'),
         ];
     }
 
-    public function update()
+    public function update(): void
     {
-        $user = auth()->user()->load('channel.camping');
+        $user = auth()->user()->load('channel.campaign');
 
         $oldImageAvatar = $user->avatar;
         $oldImageChannel = $user->channel->brand;
-        $oldImageCamping = $user->channel->camping->image;
+        $oldImageCamping = $user->channel->campaign->image;
 
-        auth()->user()->load('channel.camping')->update($this->form->getState());
+        $state = $this->form->getState();
 
-        $user->channel->slug = Str::slug($this->data['channel']['title'] . '-' . $this->data['id']);
+        // Atualiza usuário
+        $user->update($state);
+
+        // Atualiza channel
+        $user->channel->update($state['channel'] ?? []);
+        $user->channel->slug = Str::slug(($state['channel']['title'] ?? '') . '-' . $user->id);
         $user->channel->save();
 
-        $user->save();
+        // Atualiza campaign
+        $user->channel->campaign->update($state['channel']['campaign'] ?? []);
 
-        auth()->user()->load('channel.camping')->update(
-            $this->form->getState()
-        );
-
-        if($user->avatar != $oldImageAvatar)
-        {
-            if($user->avatar != "default-post.jpg"){
-                Storage::delete('public/' . $oldImageAvatar);
-            }
+        // Remove imagens antigas se foram trocadas
+        if ($user->avatar !== $oldImageAvatar && $oldImageAvatar !== 'default.jpg') {
+            Storage::disk('public')->delete($oldImageAvatar);
         }
 
-        if($user->channel->brand != $oldImageChannel){
-            if($user->channel->brand != "default-brand.png"){
-                Storage::delete('public/' . $oldImageChannel);
-            }
+        if ($user->channel->brand !== $oldImageChannel && $oldImageChannel !== 'default-brand.png') {
+            Storage::disk('public')->delete($oldImageChannel);
         }
 
-        if($user->channel->camping->image != $oldImageCamping){
-                Storage::delete('public/' . $oldImageCamping);
+        if ($user->channel->campaign->image !== $oldImageCamping && !empty($oldImageCamping)) {
+            Storage::disk('public')->delete($oldImageCamping);
         }
 
         Notification::make()
-            ->title('Perfil atualizado com sucesso!!')
-            ->body(\auth()->user()->name)
+            ->title('Perfil atualizado com sucesso!')
+            ->body(auth()->user()->name)
             ->success()
             ->send();
     }

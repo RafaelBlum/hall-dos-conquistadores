@@ -26,14 +26,14 @@ class EditUser extends EditRecord
         return [
             DeleteAction::make()
                 ->label('Deletar usuário')
-                ->before(function(User $record) {
-                      if($record->avatar && $record->avatar !== 'default.jpg'){
-                           $this->deleteFileFromStorage($record->avatar);
-                      }
-                      if($record->channel?->brand && $record->channel->brand !== 'default-brand.png'){
-                          $this->deleteFileFromStorage($record->channel->brand);
-                      }
-              })
+                ->before(function (User $record) {
+                    if ($record->avatar && $record->avatar !== 'default.jpg') {
+                        $this->deleteFileFromStorage($record->avatar);
+                    }
+                    if ($record->channel?->brand && $record->channel->brand !== 'default-brand.png') {
+                        $this->deleteFileFromStorage($record->channel->brand);
+                    }
+                })
                 ->requiresConfirmation()
                 ->modalHeading('Deletar Usuário adasdas'),
         ];

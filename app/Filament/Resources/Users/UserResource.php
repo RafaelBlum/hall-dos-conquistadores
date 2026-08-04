@@ -56,6 +56,7 @@ class UserResource extends Resource
         // Se NÃO for Super Admin, ele não pode ver ninguém que seja do tipo APP
         if ($user->panel !== \App\Enums\PanelTypeEnum::SUPER_ADMIN) {
             $query->where('panel', '!=', \App\Enums\PanelTypeEnum::SUBSCRIBER);
+
         }
 
         // Mantém a proteção de não mostrar outros Super Admins para quem não é Super
