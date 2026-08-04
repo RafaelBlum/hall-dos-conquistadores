@@ -16,7 +16,7 @@
         "laravel-vite-plugin": "^2.1",
         "postcss": "^8.4.31",
         "postcss-nesting": "^14.0.0",
-        "tailwindcss": "^4.2.1",
+        "tailwindcss": "^4.2.2",
         "vite": "^7.1.12"
     },
     "dependencies": {
