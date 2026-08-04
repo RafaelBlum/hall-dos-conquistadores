@@ -53,7 +53,7 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'panel' => PanelTypeEnum::APP,
+            'panel' => PanelTypeEnum::SUBSCRIBER,
         ]);
 
         event(new Registered($user));

@@ -5,9 +5,60 @@
 
 > **Legenda de Status:** 🟢 Concluído | 🟡 Em desenvolvimento | 🔴 Pendente
 
+
+## 🧩 RF017 — Painel Administrativo (Filament PHP) 🟡 Em desenvolvimento
+
+
+
+| 🟡 | **RF017** | **Painel Administrativo (Filament PHP)**     | O sistema deve possuir uma área administrativa para controle completo de usuários, posts, campanhas, enquetes, permissões e configurações.           |
+
+#### Arquivos Criados: 🟢 Concluído
+- app/Filament/Widgets/StatsOverviewWidget.php - Cards de estatísticas (usuários, canais, postagens, campanhas)
+
+#### Arquivo Modificado: 🟢 Concluído
+- app/Providers/Filament/AdminPanelProvider.php - Substituídos os widgets padrão pelos novos widgets
+
+
+##### Ajustes Enum Type 🟢 Concluído
+O PanelTypeEnum é utilizado nas seguintes partes do sistema:
+- ok app/Models/User.php:55	Cast do atributo panel
+- ok app/Models/User.php:67-68	Validação de enum
+- ok app/Policies/UserPolicy.php:17,35,43,48-49	Políticas de autorização (verifica se é ADMIN/SUPER_ADMIN)
+- ok app/Http/Controllers/Auth/RegisteredUserController.php:56	Define panel como APP ao registrar usuário
+- ok app/Http/Controllers/Auth/AuthenticatedSessionController.php:44	Redirecionamento após login (verifica se é ADMIN/SUPER_ADMIN)
+- ok app/Filament/Resources/Users/UserResource.php:57-63	Scope de queries (filtra usuários baseado no panel)
+- ok app/Filament/Resources/Users/Schemas/UserForm.php:149,165	Opções do select e visibilidade do campo
+- ok app/Filament/Resources/Users/Tables/UsersTable.php:76	Opções na tabela
+- ok app/Filament/Resources/Users/Pages/ListUsers.php:31-39	Filtros por panel
+- ok app/Filament/Pages/Profile.php:125	Opções no form de perfil
+- ok database/seeders/UserSeeder.php:28	Cria super admin
+- ok database/factories/UserFactory.php:23	Default factory
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ---
 
-## 🧩 RF002 — Cadastro de Seguidores
+## 🧩 RF002 — Cadastro de Seguidores 🟢 Concluído
 
 | Código    | Nome                       | Descrição                                                                                               | Prioridade | Status                | Critérios de Aceitação                                              |
 | :-------- | :------------------------- | :------------------------------------------------------------------------------------------------------ | :--------: | :-------------------: | :------------------------------------------------------------------ |

@@ -64,7 +64,7 @@ class User extends Authenticatable implements HasAvatar, FilamentUser, MustVerif
     public function canAccessPanel(Panel $panel): bool
     {
         return in_array($this->panel, [
-            PanelTypeEnum::ADMIN,
+            PanelTypeEnum::CHANNEL,
             PanelTypeEnum::SUPER_ADMIN
         ]);
     }

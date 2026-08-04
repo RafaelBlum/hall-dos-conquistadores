@@ -24,6 +24,16 @@ class WebController extends Controller
         }
     }
 
+    public function landing2()
+    {
+        try {
+            return view('landing2');
+        } catch (Exception $exception) {
+            report($exception);
+            return redirect()->back();
+        }
+    }
+
     public function gameIntruderUsers()
     {
         try {

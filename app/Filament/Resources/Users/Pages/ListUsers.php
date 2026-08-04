@@ -29,20 +29,20 @@ class ListUsers extends ListRecords
 
         // Adiciona a aba Seguidores apenas se for Super Admin
         if (auth()->user()->panel === \App\Enums\PanelTypeEnum::SUPER_ADMIN) {
-            $tabs['seguidores'] = Tab::make('Seguidores (APP)')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('panel', \App\Enums\PanelTypeEnum::APP))
+            $tabs['Inscritos'] = Tab::make('Inscritos')
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('panel', \App\Enums\PanelTypeEnum::SUBSCRIBER))
                 ->icon('heroicon-m-user-group')
-                ->badge(fn() => static::getResource()::getEloquentQuery()->where('panel', \App\Enums\PanelTypeEnum::APP)->count());
+                ->badge(fn() => static::getResource()::getEloquentQuery()->where('panel', \App\Enums\PanelTypeEnum::SUBSCRIBER)->count());
         }
 
         $tabs['admins'] = Tab::make('Administradores')
-            ->modifyQueryUsing(fn (Builder $query) => $query->where('panel', \App\Enums\PanelTypeEnum::ADMIN))
+            ->modifyQueryUsing(fn(Builder $query) => $query->where('panel', \App\Enums\PanelTypeEnum::CHANNEL))
             ->icon('heroicon-m-shield-check');
 
         return $tabs;
 
 
-//        return [
+        //        return [
 //            'all' => Tab::make('Todos os Usuários')
 //                ->badge(fn() => $this->getModel()::query()->where('panel', '!=', PanelTypeEnum::SUPER_ADMIN)->count()),
 //
